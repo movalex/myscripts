@@ -24,9 +24,14 @@ if __name__ == "__main__":
         if sys.argv[1] == "-d":
             command = 'tell app "Finder" to empty'
             p = Popen(
-                ["osascript", "-"], stdin=PIPE, stdout=PIPE, universal_newlines=True
+                ["osascript", "-"], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True
             )
             stdout, stderr = p.communicate(command)
-            print("all trash is gone")
+            if p.returncode == 0:
+                print('Trash is empty')
+            else:
+                print('trash is already empty, cancelling')
+        elif sys.argv[1] == "-h":
+                print("Help:\nUse '-d' to delete Trash files from all disks")
     else:
         clean_system_trash()
