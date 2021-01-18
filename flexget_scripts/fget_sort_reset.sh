@@ -1,7 +1,7 @@
 #!/bin/sh
 
 log_file="$HOME/logs/sort.log"
-exec 1>> $log_file 2>/dev/null 
+# exec 1>> $log_file 2>/dev/null 
 
 TRM=/usr/local/bin/transmission-remote
 FG=/usr/local/bin/flexget
@@ -43,11 +43,12 @@ else
                      $TRM $SERVER --torrent $TORRENTID --remove
                  fi 
             fi
-
+            echo $STATE_LOCATION
             if [[ "$STATE_LOCATION" ]]; then
                 if [[ "$DL_COMPLETED" ]];  then
                     echo "Torrent #$TORRENTID (`$INFO |grep "Name" | sed -e 's/^ \{1,\}//g; s/Name: //g'`) is finished"
-                    $TRM $SERVER --torrent $TORRENTID --move "${LOCATION}/SORT/" && $TRM $SERVER --torrent $TORRENTID --remove
+                    # $TRM $SERVER --torrent $TORRENTID --move "${LOCATION}/SORT/" && $TRM $SERVER --torrent $TORRENTID --remove
+                    $TRM $SERVER --torrent $TORRENTID --remove
                     SORTER=true
                 fi
             fi
@@ -58,3 +59,8 @@ if [[ $SORTER = true ]];  then
     echo "sorting things out"
     $FG execute --tasks sort
 fi 
+
+if [ ! -d "/Volumes/Elements/TVTEMP/" ]; then
+    echo "TVTEMP folder not found"
+    mkdir /Volumes/Elements/TVTEMP/
+fi
