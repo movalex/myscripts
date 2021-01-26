@@ -7,9 +7,8 @@ $DirStatus = $FolderBrowser.ShowDialog()
 
 if ( $DirStatus -eq "OK" ){
     $selectedPath = $FolderBrowser.SelectedPath
-    # get all png files in the directory
+    # get all .webp files in the directory
     $images = Get-ChildItem $selectedPath -Filter *.webp
-    # loop through every image in a folder
     foreach ($img in $images) {
         # output file will be written in the same directory with .png extension
         $outputName = $img.DirectoryName + "\" + $img.BaseName + ".png"
