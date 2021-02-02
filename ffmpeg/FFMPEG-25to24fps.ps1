@@ -17,7 +17,7 @@ if ( $DirStatus -eq "OK" ){
             # output file will be written in the same directory with .mov extension
             $outputName = $vid.DirectoryName + "\" + $vid.BaseName + "_24fps.mov"
             # do ffmpeg conversion
-            ffmpeg -y -loglevel quiet -itsscale 1.04166666667 -i $vid.FullName -codec copy $outputName
+            ffmpeg -y -loglevel quiet -vsync cfr -itsscale 1.04166666667 -r 24 -i $vid.FullName -codec copy $outputName
         }
     }
 }
