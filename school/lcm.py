@@ -1,20 +1,20 @@
+import threading
 from timeit import default_timer as timer
 
 
 def time(func):
-    """timer function"""
-
     def wrapper(*args):
+        """timer function"""
         start = timer()
         result = func(*args)
         end = timer()
-        print(f"function run in {end - start} seconds with result------------------- {result}")
+        print(f"function run in {end - start} seconds with result: {result}")
 
     return wrapper
 
 
 @time
-def lcm(x, y):
+def calculate_lcm(x, y):
     greater = max(x, y)
     while True:
         if greater % x == 0 and greater % y == 0:
@@ -23,8 +23,9 @@ def lcm(x, y):
 
 
 @time
-def lcm2(x, y):
+def calculate_lcm2(x, y):
     greater = max(x, y)
+
     counter = 1
     while True:
         check = greater * counter
@@ -33,8 +34,11 @@ def lcm2(x, y):
         counter += 1
 
 
-a, b = (2133, 22112)
+if __name__ == '__main__':
+    a, b = (2133, 22112)
 
-lcm2(a, b)
-lcm(a, b)
+    th1 = threading.Thread(target=calculate_lcm, args=(a, b))
+    th2 = threading.Thread(target=calculate_lcm2, args=(a, b))
+    th1.start()
+    th2.start()
 
