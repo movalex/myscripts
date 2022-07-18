@@ -5,7 +5,7 @@ log_file="$HOME/logs/sort.log"
 
 TRM=/usr/local/bin/transmission-remote
 FG=/usr/local/bin/flexget
-SERVER="9091 --auth admin:iddqd456456"
+SERVER="9091 --auth admin:password"
 TORRENTLIST=`$TRM $SERVER --list | sed -e '1d;$d;s/*//' | awk '{print $1}'`
 D=$(date)
 SORTER=false
