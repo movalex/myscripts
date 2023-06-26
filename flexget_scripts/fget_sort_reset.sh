@@ -11,6 +11,17 @@ D=$(date)
 SORTER=false
 SEEDING=0
 LOCATION="/Volumes/Elements/TVTEMP"
+SORT_FOLDER="/Volumes/Elements/SORT"
+
+if [ ! -d $LOCATION ]; then
+    echo "TVTEMP folder not found"
+    mkdir $LOCATION 
+fi
+if [ ! -d $SORT_FOLDER ]; then
+    echo "SORT folder not found"
+    mkdir $SORT_FOLDER
+fi
+
 SIZE=$(du -s $LOCATION | awk '{print $1}')
 
 echo `seq -f "-" -s '' ${#D}`
@@ -43,24 +54,23 @@ else
                      $TRM $SERVER --torrent $TORRENTID --remove
                  fi 
             fi
+
             echo $STATE_LOCATION
+            
             if [[ "$STATE_LOCATION" ]]; then
                 if [[ "$DL_COMPLETED" ]];  then
                     echo "Torrent #$TORRENTID (`$INFO |grep "Name" | sed -e 's/^ \{1,\}//g; s/Name: //g'`) is finished"
-                    # $TRM $SERVER --torrent $TORRENTID --move "${LOCATION}/SORT/" && $TRM $SERVER --torrent $TORRENTID --remove
+                    $TRM $SERVER --torrent $TORRENTID --move "$SORT_FOLDER" 
                     $TRM $SERVER --torrent $TORRENTID --remove
-                    SORTER=true
                 fi
             fi
         done
+        SORTER=true
 fi
+
 
 if [[ $SORTER = true ]];  then
     echo "sorting things out"
     $FG execute --tasks sort
 fi 
 
-if [ ! -d "/Volumes/Elements/TVTEMP/" ]; then
-    echo "TVTEMP folder not found"
-    mkdir /Volumes/Elements/TVTEMP/
-fi
