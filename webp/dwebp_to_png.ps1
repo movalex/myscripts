@@ -1,5 +1,8 @@
 Add-Type -AssemblyName System.Windows.Forms
-$FolderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+$FolderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog -Property @{
+    SelectedPath = "D:\PROJECTS\"
+}
+[void]$FolderBrowser.ShowDialog()
 $FolderBrowser.Description = 'folder with .webp files'
 $FolderBrowser.RootFolder = [System.Environment+specialfolder]::Desktop
 $FolderBrowser.ShowNewFolderButton = $true
