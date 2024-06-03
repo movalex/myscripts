@@ -5,10 +5,11 @@ from datetime import timedelta
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+
 class YouTubeAPI:
     API_KEY = os.getenv("YOUTUBE_API_KEY", "")
+    API_TEST_CHANNEL = "UC_x5XG1OV2P6uZZ5FSM9Ttw"  # Google Developers YouTube channel
     YOUTUBE_LINK = "https://www.youtube.com/watch?v="
-
 
     def __init__(self):
         self.api_key = self.verify_api_key()
@@ -16,7 +17,9 @@ class YouTubeAPI:
 
     def get_youtube_connection(self, api_key):
         try:
-            youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+            youtube = googleapiclient.discovery.build(
+                "youtube", "v3", developerKey=api_key
+            )
             if not DEBUG:
                 return youtube
 
@@ -40,7 +43,6 @@ class YouTubeAPI:
             print(f"An unexpected error occurred: {error}")
             return False
 
-    
     def verify_api_key(self):
         if not self.API_KEY:
             print("No YOUTUBE_API_KEY variable found.")
@@ -52,8 +54,9 @@ class YouTubeAPI:
             youtube = build("youtube", "v3", developerKey=self.api_key)
             return youtube
         except HttpError as error:
-            print(f"HTTP error: {error.resp.status}. API key is invalid or quota exceeded.")
+            print(
+                f"HTTP error: {error.resp.status}. API key is invalid or quota exceeded."
+            )
         except Exception as error:
             print(f"Unexpected error: {error}")
         return None
-
