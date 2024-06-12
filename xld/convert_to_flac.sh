@@ -3,7 +3,7 @@
 # Function to display usage instructions
 usage() {
     echo "Usage: $0 [path_element]"
-    echo "path_element: Optional. If provided, it is appended to the cue filename as '*path_element.cue'."
+    echo "path_element: Optional. If provided, it is appended to the cue filename pattern like '*path_element.cue'."
     exit 1
 }
 
@@ -19,19 +19,18 @@ path_element=""
 
 if [[ $# -eq 1 ]]; then
     path_element="$1"
-    echo $path_element
 elif [[ $# -gt 1 ]]; then
     usage
 fi
 
 # How many directories we have to process
 dir_count=$(find . -maxdepth 1 -type d | wc -l)
-# Initialize progress counter
-progress=0
+progress_file=$(mktemp)
+echo 0 > "$progress_file"
 
 # Function to display progress
 display_progress() {
-    progress=$((progress + 1))
+    local progress=$(cat "$progress_file")
     echo -ne "Processing directories: $progress/$((dir_count - 1))\r"
 }
 
@@ -53,7 +52,14 @@ process_directory() {
     # Return to the parent directory
     cd ..
 
-    # Update and display progress
+    # Update progress
+    {
+        flock -x 200
+        local progress=$(($(cat "$progress_file") + 1))
+        echo "$progress" > "$progress_file"
+    } 200>"$progress_file.lock"
+
+    # Refresh display
     display_progress
 }
 
@@ -64,5 +70,8 @@ done
 
 # Wait for all background processes to complete
 wait
+
+# Clean up
+rm "$progress_file" "$progress_file.lock"
 
 echo -e "\nDone processing all directories."
